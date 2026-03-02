@@ -1,4 +1,4 @@
-package com.dakinnir.urlshortenerservice;
+package com.dakinnir.urlshortenerservice.repository;
 
 import com.dakinnir.urlshortenerservice.model.URL;
 import org.springframework.data.jpa.repository.JpaRepository;
