@@ -1,4 +1,4 @@
-package com.dakinnir.urlshortenerservice.utilities;
+package com.dakinnir.urlshortenerservice.utils;
 
 import java.security.SecureRandom;
 

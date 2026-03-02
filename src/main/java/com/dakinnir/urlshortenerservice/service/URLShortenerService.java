@@ -1,18 +1,21 @@
-package com.dakinnir.urlshortenerservice;
+package com.dakinnir.urlshortenerservice.service;
 
+import com.dakinnir.urlshortenerservice.repository.URLRepository;
 import com.dakinnir.urlshortenerservice.dto.URLShortenRequest;
 import com.dakinnir.urlshortenerservice.dto.URLShortenResponse;
 import com.dakinnir.urlshortenerservice.model.URL;
 import com.dakinnir.urlshortenerservice.utils.Base62Encoder;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 
 @Service
-public class URLService {
+@RequiredArgsConstructor
+public class URLShortenerService {
 
-    private URLRepository urlRepository;
+    private final URLRepository urlRepository;
 
     @Value("${app.base-url}")
     private String baseUrl;
@@ -44,5 +47,18 @@ public class URLService {
             if (++attempts > 5) throw new RuntimeException("Failed to generate unique code after multiple attempts");
         } while (urlRepository.existsByShortCode(code));
         return code;
+    }
+
+    public String getOriginalLongURL(String code) {
+        URL url = urlRepository.findByShortCode(code);
+        if (url == null) {
+            throw new IllegalArgumentException("Short code not found: " + code);
+        }
+        if (url.isExpired()) {
+            throw new IllegalStateException("Short URL has expired: " + code);
+        }
+        url.setClicksCount(url.getClicksCount() + 1);
+        urlRepository.save(url);
+        return url.getLongURL();
     }
 }

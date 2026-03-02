@@ -1,18 +1,14 @@
 package com.dakinnir.urlshortenerservice.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
 import java.time.Instant;
 
 @Data
 @Entity
-@NoArgsConstructor
 @RequiredArgsConstructor
-@AllArgsConstructor
 public class URL {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,6 +30,12 @@ public class URL {
 
     @Column(name = "expires_at", nullable = false, updatable = false)
     private Instant expiresAt;
+
+    public URL(String shortCode, String longURL, Instant expiresAt) {
+        this.shortCode = shortCode;
+        this.longURL = longURL;
+        this.expiresAt = expiresAt;
+    }
 
     public boolean isExpired() {
         return expiresAt != null && Instant.now().isAfter(expiresAt);
